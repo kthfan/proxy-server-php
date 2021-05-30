@@ -1,0 +1,77 @@
+ <html>
+     <head>
+        <script src="./js(client)/proxy.js"></script>
+        <script>
+            
+        </script>
+     </head>
+     <body>
+        URL: <input id="url"/></br>
+        File name: <input id="fn"/></br>
+        <button id="ok_post_header">using post header</button>
+        <button id="ok_get">using get</button>
+        <button id="ok_post_header_mid">using post header(middleware)</button>
+        <button id="ok_get_mid">using get(middleware)</button>
+        <script>
+            var input_url = document.getElementById("url");
+            var fn = document.getElementById("fn");
+            var ok_post_header = document.getElementById("ok_post_header");
+            var ok_get = document.getElementById("ok_get");
+            var ok_post_header_mid = document.getElementById("ok_post_header_mid");
+            var ok_get_mid = document.getElementById("ok_get_mid");
+            const unbotInit = {
+                   credentials: 'same-origin', // include, same-origin, *omit
+                    headers: {
+                        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0',
+                    },
+                    mode: 'cors', // no-cors, cors, *same-origin
+                    redirect: 'follow', // manual, *follow, error
+                    referrer: 'no-referrer', // *client, no-referrer
+                }
+            ok_post_header.onclick = function(){ 
+                proxyFetch.proxyUrl = "http://127.0.0.1/proxy/test/php(server)/by-post-header.php";
+                proxyFetch(input_url.value, {
+                }).then(response => {
+                    return response.blob();
+                }).then(blob => {
+                    console.log(blob);
+                    var a = document.createElement("a");
+                    a.href = URL.createObjectURL(blob);
+                    a.download = fn.value;
+                    a.click();
+                });
+            }
+            ok_post_header_mid.onclick = function(){  
+                proxyFetch.proxyUrl = "http://127.0.0.1/proxy/test/php(server)/by-post-header-middleware.php";
+                proxyFetch(input_url.value, {
+                }).then(response => {
+                    return response.blob();
+                }).then(blob => {
+                    console.log(blob);
+                    var a = document.createElement("a");
+                    a.href = URL.createObjectURL(blob);
+                    a.download = fn.value;
+                    a.click();
+                });
+            }
+            ok_get.onclick = function(){
+                proxyGet.proxyUrl = "http://127.0.0.1/proxy/test/php(server)/by-get.php";
+                var url = proxyGet(input_url.value, {
+                });
+                var a = document.createElement("a");
+                a.href = url;
+                a.download = fn.value;
+                a.click();
+            }
+            ok_get_mid.onclick = function(){  
+                proxyGet.proxyUrl = "http://127.0.0.1/proxy/test/php(server)/by-get-middleware.php";
+                var url = proxyGet(input_url.value, {
+                });
+                var a = document.createElement("a");
+                a.href = url;
+                a.download = fn.value;
+                a.click();
+            }
+        </script>
+     </body>
+ </html>
